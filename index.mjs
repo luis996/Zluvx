@@ -6,7 +6,7 @@ import { Readable } from 'node:stream';
 import { finished } from 'node:stream/promises';
 import readline from 'node:readline/promises';
 import admzip from 'adm-zip';
-import chpr from 'node:child_process';
+import core from './core.mjs';
 // import fetch from 'node-fetch';
 async function restart() {await main();}
 async function stop() {process.exit();}
@@ -54,19 +54,6 @@ async function jreHandle(ver, jrePath) {
         resolve();
     })});
 }
-
-async function runVersion(ver, type, usr, mem) {
-    if (type === "Vanilla") {
-        const processx = chpr.fork("./core.mjs");
-        processx.once("message", async (m)=>{
-            if (m[0] === "data") {
-                processx.send(["data", [ver, type, usr, mem]]);
-            }
-        })
-        console.log(chalk.cyanBright("Downloading assets. This may take a while."));
-        await new Promise((resolve) => processx.once("exit", resolve));
-    }
-}
 //
 async function main() {
     await fs.access(path.join(process.env.appdata, ".minecraft/")).catch(async c=>{ await fs.mkdir(path.join(process.env.appdata, ".minecraft/")) });
@@ -102,7 +89,7 @@ async function main() {
     await fs.access(path.join(jrePath, "/21/")).catch(async c=>{await jreHandle("21", jrePath)});
     console.log(chalk.cyanBright("Verifying JRE-8..."));
     await fs.access(path.join(jrePath, "/8/")).catch(async c=>{await jreHandle("8", jrePath)});
-    await runVersion(version, versionType, username, memory);
+    await core.runVersion(version, versionType, username, memory);
     rl.close();
     await restart();
 
