@@ -6,7 +6,7 @@ import { Readable } from 'node:stream';
 import { finished } from 'node:stream/promises';
 import readline from 'node:readline/promises';
 import admzip from 'adm-zip';
-import core from './core.mjs';
+import * as core from './core.mjs'
 // import fetch from 'node-fetch';
 async function restart() {await main();}
 async function stop() {process.exit();}

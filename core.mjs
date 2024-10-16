@@ -2,7 +2,7 @@ import mclc from 'minecraft-launcher-core';
 import path from 'node:path';
 import chalk from 'chalk';
 const { Client, Authenticator } = mclc;
-async function x(version, versionType, username, memory) {
+export async function runVersion(version, versionType, username, memory) {
     var jre_ver = "8";
     const processedVersion = version.split(".")[1];
     if (parseInt(processedVersion) >= 17) {
@@ -29,9 +29,6 @@ async function x(version, versionType, username, memory) {
         }
         launcher.launch(opts);
         launcher.on('data', (e) => console.log(e));
-        launcher.on('close', (code) => {process.exit();})
+        return new Promise((resolve) => {launcher.on('close', resolve)});
     }
-}
-export default {
-    runVersion: x,
 }
