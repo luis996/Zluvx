@@ -22,6 +22,22 @@ async function fetchVersions(type) {
         })
         return versionsArray;
     }
+    if (type === "Fabric") {
+        const fabricMeta = "https://meta.fabricmc.net";
+        const fabricResponse = await (await fetch(fabricMeta + "/v2/versions/game", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })).json();
+        let versionsArray = [];
+        fabricResponse.forEach(ver => {
+            if (ver.stable === true) {
+                versionsArray.push(ver.version);
+            }
+        });
+        return versionsArray;
+    }
 }
 
 async function jreHandle(ver, jrePath) {
